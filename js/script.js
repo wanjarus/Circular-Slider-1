@@ -140,13 +140,22 @@ function circularSlider(options) {
       e.path[1].style.zIndex = '0';
       mouseDown = false;
     });
+    sliderContainer.addEventListener("touchend", (e) => {
+      e.path[1].style.zIndex = '0';
+      mouseDown = false;
+    });
     sliderContainer.addEventListener("mousedown", (e) => {
+      e.path[1].style.zIndex = '123';
+      mouseDown = true;
+    });
+    sliderContainer.addEventListener("touchstart", (e) => {
       e.path[1].style.zIndex = '123';
       mouseDown = true;
     });
     progressMeter.addEventListener("click", this.update);
     progressValue.addEventListener("click", this.update);
     document.addEventListener("mousemove", this.update);
+    document.addEventListener("touchmove", this.update, {passive: false});
   };
 
   this.update = (e) => {
@@ -161,7 +170,15 @@ function circularSlider(options) {
   this.move = (e) => {
     e.path[1].style.zIndex = '123';
 
-    var position = { x: e.pageX, y: e.pageY };
+    // console.log('Event: ' + e.type);
+    var position;
+    if(e.type == 'mouseup' || e.type == 'mousedown' || e.type == 'mousemove' || e.type == 'click') {
+      position = { x: e.pageX, y: e.pageY };
+    } else if(e.type == 'touchend' || e.type == 'touchstart' || e.type == 'touchmove') {
+      e.preventDefault();
+      position = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+
     var dialRadius = dial.offsetWidth / 2;
     var coords = {
       x: position.x - sliderContainer.offsetLeft,
@@ -176,14 +193,16 @@ function circularSlider(options) {
 
     dial.style.transform = "translate(" + x + "," + y + ")";
 
-    console.log(text.textContent + ": $" + points);
+    // console.log(text.textContent + ": $" + points);
     pricing.textContent = "$" + points;
     this.progress(points);
   }
 
   this.progress = (value) => {
+    // console.log('Value: ' + value);
     var progress = value / options.range[1];
     var dashoffset = CIRCUMFERENCE * (1 - progress);
+    // console.log('dashoffset: ' + dashoffset);
     progressValue.style.strokeDashoffset = dashoffset;
   };
 
@@ -192,5 +211,5 @@ function circularSlider(options) {
 
   var xx = Math.ceil((options.radius - 5) * Math.sin(1 * Math.PI / 180)) + options.radius + "px";
   var yy = Math.ceil((options.radius - 5) * -Math.cos(1 * Math.PI / 180)) + options.radius + "px";
-  dial.style.transform = "translate(" + xx + "," + yy + ")"; // jQuery
+  dial.style.transform = "translate(" + xx + "," + yy + ")";
 }
