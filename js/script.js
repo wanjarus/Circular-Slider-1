@@ -5,8 +5,8 @@ var id = 1;
   svg.setAttribute("class", "progress");
   svg.setAttribute("width", 500);
   svg.setAttribute("height", 500);
-  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   svg.setAttribute("viewBox", `0 0 ${500} ${500}`);
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
   slider1 = new circularSlider({
     container: svg,
@@ -89,8 +89,8 @@ function circularSlider(options) {
   progressValue.setAttribute("stroke-width", 12);
   progressValue.style.stroke = options.color;
 
-  var dial = document.createElement("div");
-  dial.setAttribute("class", "dial");
+  // var dial = document.createElement("div");
+  // dial.setAttribute("class", "dial");
 
   var input = document.createElement("input");
   input.setAttribute("type", "range");
@@ -121,7 +121,6 @@ function circularSlider(options) {
 
   group.appendChild(progressMeter);
   group.appendChild(progressValue);
-  // group.appendChild(dial);
   // group.appendChild(input);
   options.container.appendChild(group);
 
@@ -171,9 +170,6 @@ function circularSlider(options) {
   };
 
   this.move = e => {
-    // e.path[1].style.zIndex = '123';
-    // sliderContainer.style.zIndex = '123';
-
     // console.log('Event: ' + e.type);
     var position;
     if (
@@ -192,50 +188,49 @@ function circularSlider(options) {
       position = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }
 
-    var dialRadius = dial.offsetWidth / 2;
     var coords = {
-      x: position.x - group.getBoundingClientRect().left,
-      y: position.y - group.getBoundingClientRect().top
+      x: position.x - (group.getBoundingClientRect().left),
+      y: position.y - (group.getBoundingClientRect().top)
     };
     var atan = Math.atan2(coords.x - options.radius, coords.y - options.radius);
     var deg = Math.ceil(-atan / (Math.PI / 180) + 180);
 
-    var x =
-      Math.ceil((options.radius - 5) * Math.sin(deg * Math.PI / 180)) +
-      options.radius +
-      "px";
-    var y =
-      Math.ceil((options.radius - 5) * -Math.cos(deg * Math.PI / 180)) +
-      options.radius +
-      "px";
+    // var x =
+    //   Math.ceil((options.radius - 5) * Math.sin(deg * Math.PI / 180)) +
+    //   options.radius +
+    //   "px";
+    // var y =
+    //   Math.ceil((options.radius - 5) * -Math.cos(deg * Math.PI / 180)) +
+    //   options.radius +
+    //   "px";
     var points = Math.ceil(deg * options.range[1] / 360);
 
-    dial.style.transform = "translate(" + x + "," + y + ")";
+    // dial.style.transform = "translate(" + x + "," + y + ")";
 
-    // console.log(text.textContent + ": $" + points);
+    console.log(text.textContent + ": $" + points);
     input.value = points;
     pricing.textContent = "$" + input.value;
     this.progress(input.value);
   };
 
   this.progress = value => {
-    // console.log('Value: ' + value);
+    console.log('Value: ' + value);
     progressValue.style.strokeDasharray = 2 * Math.PI * (options.radius - 6);
     var progress = value / options.range[1];
     var dashoffset = 2 * Math.PI * (options.radius - 6) * (1 - progress);
-    // console.log('dashoffset: ' + dashoffset);
+    console.log('dashoffset: ' + dashoffset);
     progressValue.style.strokeDashoffset = dashoffset;
   };
 
   this.progress(input.value);
 
-  var xx =
-    Math.ceil((options.radius - 5) * Math.sin(1 * Math.PI / 180)) +
-    options.radius +
-    "px";
-  var yy =
-    Math.ceil((options.radius - 5) * -Math.cos(1 * Math.PI / 180)) +
-    options.radius +
-    "px";
-  dial.style.transform = "translate(" + xx + "," + yy + ")";
+  // var xx =
+  //   Math.ceil((options.radius - 5) * Math.sin(1 * Math.PI / 180)) +
+  //   options.radius +
+  //   "px";
+  // var yy =
+  //   Math.ceil((options.radius - 5) * -Math.cos(1 * Math.PI / 180)) +
+  //   options.radius +
+  //   "px";
+  // dial.style.transform = "translate(" + xx + "," + yy + ")";
 }
